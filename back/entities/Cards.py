@@ -5,13 +5,13 @@ from pydantic import BaseModel
 
 
 class Category(Enum):
-    FIRST = 1
-    SECOND = 2
-    THIRD = 3
-    FOURTH = 4
-    FIFTH = 5
-    SIXTH = 6
-    SEVENTH = 7
+    FIRST = 'FIRST'
+    SECOND = 'SECOND'
+    THIRD = 'THIRD'
+    FOURTH = 'FOURTH'
+    FIFTH = 'FIFTH'
+    SIXTH = 'SIXTH'
+    SEVENTH = 'SEVENTH'
 
 
 class Card(BaseModel):
