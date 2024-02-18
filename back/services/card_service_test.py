@@ -1,3 +1,4 @@
+import datetime
 import unittest
 import uuid
 from unittest.mock import MagicMock
@@ -14,12 +15,12 @@ class CardServiceTest(unittest.TestCase):
         self.card_repository.add_new_card = MagicMock()
 
         uuid.uuid4 = MagicMock()
-        uuid.uuid4.return_value = '6c10ad48-2bb8-4e2e-900a-21d62c00c07b'
+        uuid.uuid4.return_value = "6c10ad48-2bb8-4e2e-900a-21d62c00c07b"
 
     def test_should_get_cards(self):
         # Given
-        expected_cards = [mocks.teamwork_card]
-        self.card_repository.get_all_cards.return_value = expected_cards
+        expected_cards = [mocks.teamwork_card.to_api_card()]
+        self.card_repository.get_all_cards.return_value = [mocks.teamwork_card]
         card_service = CardService(card_repository=self.card_repository)
 
         # When
@@ -32,16 +33,73 @@ class CardServiceTest(unittest.TestCase):
     def test_should_add_card(self):
         # Given
         expected_card = mocks.teamwork_card
-        self.card_repository.add_new_card.return_value = expected_card
+        self.card_repository.add_new_card.return_value = mocks.teamwork_card
         card_service = CardService(card_repository=self.card_repository)
 
         # When
         card = card_service.add_new_card(
             question=mocks.teamwork_card.question,
             answer=mocks.teamwork_card.answer,
-            tag=mocks.teamwork_card.tag
+            tag=mocks.teamwork_card.tag,
         )
 
         # Then
-        self.assertEqual(expected_card, card)
-        self.card_repository.add_new_card.assert_called_once_with(expected_card)
+        self.assertEqual(expected_card.to_api_card(), card)
+
+    def test_should_get_quizz_for_first_day(self):
+        # Given
+        today = datetime.date.today()
+        self.card_repository.get_all_cards.return_value = [
+            mocks.teamwork_card,
+            mocks.programming_card,
+            mocks.mathematics_card,
+        ]
+        expected_cards = [mocks.teamwork_card.to_api_card()]
+        card_service = CardService(card_repository=self.card_repository)
+
+        # When
+        api_cards = card_service.get_quizz(date=today)
+
+        # Then
+        self.assertEqual(expected_cards, api_cards)
+
+    def test_should_get_quizz_for_second_day(self):
+        # Given
+        today = datetime.date.today() + datetime.timedelta(days=1)
+        self.card_repository.get_all_cards.return_value = [
+            mocks.teamwork_card,
+            mocks.programming_card,
+            mocks.mathematics_card,
+        ]
+        expected_cards = [
+            mocks.teamwork_card.to_api_card(),
+            mocks.programming_card.to_api_card(),
+        ]
+        card_service = CardService(card_repository=self.card_repository)
+
+        # When
+        api_cards = card_service.get_quizz(date=today)
+
+        # Then
+        self.assertEqual(expected_cards, api_cards)
+
+    def test_should_get_quizz_for_second_day(self):
+        # Given
+        today = datetime.date.today() + datetime.timedelta(days=63)
+        self.card_repository.get_all_cards.return_value = [
+            mocks.teamwork_card,
+            mocks.programming_card,
+            mocks.mathematics_card,
+        ]
+        expected_cards = [
+            mocks.teamwork_card.to_api_card(),
+            mocks.programming_card.to_api_card(),
+            mocks.mathematics_card.to_api_card(),
+        ]
+        card_service = CardService(card_repository=self.card_repository)
+
+        # When
+        api_cards = card_service.get_quizz(date=today)
+
+        # Then
+        self.assertEqual(expected_cards, api_cards)
