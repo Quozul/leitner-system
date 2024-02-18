@@ -12,6 +12,15 @@ teamwork_card = Card(
     date=datetime.date.today(),
 )
 
+teamwork_card_cat_two = Card(
+    card_id=teamwork_card.id,
+    question=teamwork_card.question,
+    answer=teamwork_card.answer,
+    tag=teamwork_card.tag,
+    date=teamwork_card.date,
+    category=Category.SECOND,
+)
+
 programming_card = Card(
     card_id=uuid.uuid4(),
     category=Category.SECOND,

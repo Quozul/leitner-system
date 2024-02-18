@@ -83,7 +83,7 @@ class CardServiceTest(unittest.TestCase):
         # Then
         self.assertEqual(expected_cards, api_cards)
 
-    def test_should_get_quizz_for_second_day(self):
+    def test_should_get_quizz_for_63_day(self):
         # Given
         today = datetime.date.today() + datetime.timedelta(days=63)
         self.card_repository.get_all_cards.return_value = [

@@ -43,4 +43,25 @@ class CardService:
         return api_cards
 
     def answer_card(self, card_id: uuid.UUID, is_valid: bool):
-        pass
+        card = self.card_repository.get_card_by_id(card_id)
+        if is_valid:
+            card.category = get_next_category(card.category)
+        else:
+            card.date = datetime.date.today()
+        self.card_repository.update_card(card)
+
+
+def get_next_category(current_category: Category) -> Category:
+    if current_category == Category.FIRST:
+        return current_category.SECOND
+    if current_category == Category.SECOND:
+        return current_category.THIRD
+    if current_category == Category.THIRD:
+        return current_category.FOURTH
+    if current_category == Category.FOURTH:
+        return current_category.FIFTH
+    if current_category == Category.FIFTH:
+        return current_category.SIXTH
+    if current_category == Category.SIXTH:
+        return current_category.SEVENTH
+    raise Exception("Unknown category")

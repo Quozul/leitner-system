@@ -14,9 +14,20 @@ class CardRepository:
             return self.cards
         return [card for card in self.cards if card.tag in tags]
 
+    def get_card_by_id(self, card_id: uuid) -> Card:
+        for card in self.cards:
+            if card.id == card_id:
+                return card
+
+        raise Exception("Card does not exists")
+
     def add_new_card(self, card: Card) -> Card:
         self.cards.append(card)
         return card
 
     def delete_card(self, card_id: uuid.UUID):
         self.cards = [card for card in self.cards if card.id is not card_id]
+
+    def update_card(self, card: Card):
+        self.delete_card(card.id)
+        self.add_new_card(card)
